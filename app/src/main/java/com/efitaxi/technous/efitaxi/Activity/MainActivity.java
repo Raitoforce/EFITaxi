@@ -13,6 +13,7 @@ import android.view.WindowManager;
 
 import com.efitaxi.technous.efitaxi.Activity.Fragment.MapFragment;
 import com.efitaxi.technous.efitaxi.R;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity
             mapFragment=new MapFragment();
             getSupportFragmentManager().beginTransaction().replace(R.id.contenedorMap, mapFragment).commit();
         }
+
     }
 
     @Override

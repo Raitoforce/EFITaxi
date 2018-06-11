@@ -3,6 +3,7 @@ package com.efitaxi.technous.efitaxi.Activity.Fragment;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -21,11 +22,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.efitaxi.technous.efitaxi.Activity.MainActivity;
 import com.efitaxi.technous.efitaxi.R;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -47,11 +54,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
     private DrawerLayout drawer;
     private LocationManager locationM;
     private Location location;
-
+    private EditText editTextOrigin;
+    private EditText editTextDestiny;
+    private Place placeC;
+    private MarkerOptions markerOptions;
+    private SupportPlaceAutocompleteFragment autocompleteFragment;
     public MapFragment() {
 
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,6 +70,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
         view = inflater.inflate(R.layout.fragment_map, container, false);
         menuButton = (ImageButton) view.findViewById(R.id.menuButton);
         drawer = (DrawerLayout) container.getRootView().findViewById(R.id.drawer_layout);
+        editTextOrigin = (EditText) view.findViewById(R.id.textOrigin);
+        editTextDestiny = (EditText) view.findViewById(R.id.textDestiny);
+        autocompleteFragment = (SupportPlaceAutocompleteFragment) getChildFragmentManager().findFragmentById(R.id.prediction);
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                placeC=place;
+                markerOptions=new MarkerOptions();
+                markerOptions.position(place.getLatLng());
+                markerOptions.title("Origen");
+                gMap.addMarker(markerOptions);
+                gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(),17));
+            }
+
+            @Override
+            public void onError(Status status) {
+
+            }
+        });
         menuButton.setOnClickListener(this);
         return view;
     }
@@ -96,7 +125,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
             longitude = location.getLongitude();
         }
         LatLng myLocation = new LatLng(latitude, longitude);
-        gMap.addMarker(new MarkerOptions().position(myLocation).title("Ubicacion Actual")).setDraggable(true);
+        gMap.setOnMarkerDragListener(this);
+        //gMap.addMarker(new MarkerOptions().position(myLocation).title("Ubicacion Actual")).setDraggable(true);
         gMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
         gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(myLocation.latitude, myLocation.longitude), 17.0f), 1500, null);
@@ -123,7 +153,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, View.On
 
     @Override
     public void onMarkerDrag(Marker marker) {
-        Toast.makeText(getActivity().getApplicationContext(),"Lat: "+String.valueOf(marker.getPosition().latitude)+" Long:"+String.valueOf(marker.getPosition().longitude),Toast.LENGTH_LONG).show();
+
     }
 
     @Override

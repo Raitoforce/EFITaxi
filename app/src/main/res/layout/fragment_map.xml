@@ -28,12 +28,12 @@
             app:srcCompat="@drawable/ic_menu_button" />
 
         <RelativeLayout
+            android:id="@+id/controles"
             android:layout_width="wrap_content"
             android:layout_height="150dp"
             android:layout_alignParentBottom="true"
             android:layout_marginHorizontal="30dp"
             android:layout_marginBottom="16dp"
-            android:visibility="invisible"
             android:background="@drawable/black_backgroud">
 
             <Button
@@ -86,6 +86,14 @@
                 android:hint="Destino"
                 android:inputType="textPersonName" />
         </RelativeLayout>
+            <fragment
+                android:id="@+id/prediction"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/controles"
+                android:layout_centerHorizontal="true"
+                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment">
+            </fragment>
 
     </RelativeLayout>
 </FrameLayout>
